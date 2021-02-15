@@ -1,0 +1,140 @@
+
+
+<%- include('partials/header'); -%>
+<div style="padding: 0 3vw;">
+  
+  <div class="row">
+    <div class="col-lg-6 col-md-6 col-12 text-center">
+      <div class="row align-content-center">
+        <div class="col-5 text-start">
+          <h2>My Questions</h2><br>
+        </div>
+        <div class="col-7 text-end">
+          <a class="btn" data-toggle="modal" data-target="#exampleModalCenter">+ My Question</a>
+        </div>
+      </div>
+      
+      
+      <table class="table">
+        <thead>
+          <tr class="text-center">
+            <th scope="col" >Question</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (questions.length > 0) { %>
+            <% questions.forEach(question => { %>
+              <tr class="text-center hover_row" onclick="window.location='<%= question.link %>';">
+                <td>                        
+                    <%= question.name %>
+                </td>
+              </tr>
+              
+              
+            <% }) %>
+          <% } else { %>
+            <p>There are no questions to display...</p>
+          <% } %>
+          
+        </tbody>
+      </table>
+    </div>
+    <div class="col-lg-6 col-md-6 col-12 text-center">
+      <img src="/question.svg" width="70%" alt="">
+    </div>
+  </div>
+    
+  <div class="modal fade" id="exampleModalCenter" style="padding: 0px 0px;" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content" style="width: fit-content; padding: 0px 0px;">
+        <div class="modal-body">
+          <form action="/add_myQuestion" autocomplete="off">
+            <h2>Add My Question</h2>
+            <label for="QName">Question Name</label>
+            <input type="text" name="QName" required />
+            <div class="QName error"></div>
+            <label for="link">Question Link</label>
+            <input type="url" name="link" required />
+            <div class="link error"></div>
+            <label for="topic">Select Topic</label>
+            <select id="topic" name="topic" onchange='CheckTopic(this.value);' required>
+              <option value="">Select topic</option>
+              <option value="Add topic">Add topic</option>
+              <% if (topics.length > 0) { %>
+                  <% topics.forEach(topic => { %>
+                      <option value="<%= topic.name %>"><%= topic.name %></option>
+                  <% }) %>
+                <% } %>
+              
+            </select>
+            <label for="add_topic" id="label_topic" style='display:none;'>Add Topic</label>
+            <input type="text" name="add_topic" id="add_topic" style='display:none;'/>
+            
+            <br>
+            <div class="FError"></div>
+            <div class="modal-footer">
+              <button type="submit">Add</button>
+              <button type="button" data-dismiss="modal">Close</button>
+            </div>
+            
+          </form>
+          
+        </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer'); -%>
+
+<script>
+  function CheckTopic(val){
+      var label = document.getElementById('label_topic');
+      var element=document.getElementById('add_topic');
+      if(val=='Add topic'){
+      label.style.display='block';
+      element.style.display='block';
+      element.required = true;
+      }
+      else { 
+      element.style.display='none';
+      element.required = false;
+      label.style.display='none';
+      }
+  }
+const form = document.querySelector('form');
+const FError = document.querySelector('.FError');
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  // reset errors
+  FError.textContent = '';
+  // get values
+  const Qname = form.QName.value;
+  const link = form.link.value;
+  let topicName = form.topic.value;
+  
+  if(topicName =="Add topic"){
+      topicName = form.add_topic.value;
+  }
+  
+  try {
+    const res = await fetch('/add_myQuestion', { 
+      method: 'POST', 
+      body: JSON.stringify({ Qname, link, topicName }),
+      headers: {'Content-Type': 'application/json'}
+    });
+    const data = await res.json();
+    console.log(data);
+    if (data.error) {
+      FError.textContent = data.error;
+    }
+    if (data.question) {
+      location.assign('/my_topics/'+ topicName);
+    }
+  }
+  catch (err) {
+      console.log(err);
+  }
+});
+</script>

@@ -1,0 +1,81 @@
+<%- include('partials/header'); -%>
+
+<form action="/add_question" autocomplete="off">
+  <h2>Add Question</h2>
+  <label for="QName">Question Name</label>
+  <input type="text" name="QName" required />
+  <div class="QName error"></div>
+  <label for="link">Question Link</label>
+  <input type="url" name="link" required />
+  <div class="link error"></div>
+  <label for="topic">Select Topic</label>
+  <select id="topic" name="topic" onchange='CheckTopic(this.value);' required>
+    <option value="">Select topic</option>
+    <option value="Add topic">Add topic</option>
+    <% if (topics.length > 0) { %>
+        <% topics.forEach(topic => { %>
+            <option value="<%= topic.name %>"><%= topic.name %></option>
+        <% }) %>
+      <% } %>
+    
+  </select>
+  <label for="add_topic" id="label_topic" style='display:none;'>Add Topic</label>
+  <input type="text" name="add_topic" id="add_topic" style='display:none;'/>
+  
+  <br>
+  <div class="FError"></div>
+  <button type="submit">Add</button>
+</form>
+
+<%- include('partials/footer'); -%>
+
+<script>
+    function CheckTopic(val){
+        var label = document.getElementById('label_topic');
+        var element=document.getElementById('add_topic');
+        if(val=='Add topic'){
+        label.style.display='block';
+        element.style.display='block';
+        element.required = true;
+        }
+        else { 
+        element.style.display='none';
+        element.required = false;
+        label.style.display='none';
+        }
+    }
+  const form = document.querySelector('form');
+  const FError = document.querySelector('.FError');
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    // reset errors
+    FError.textContent = '';
+    // get values
+    const Qname = form.QName.value;
+    const link = form.link.value;
+    let topicName = form.topic.value;
+    
+    if(topicName =="Add topic"){
+        topicName = form.add_topic.value;
+    }
+    
+    try {
+      const res = await fetch('/add_question', { 
+        method: 'POST', 
+        body: JSON.stringify({ Qname, link, topicName }),
+        headers: {'Content-Type': 'application/json'}
+      });
+      const data = await res.json();
+      console.log(data);
+      if (data.error) {
+        FError.textContent = data.error;
+      }
+      if (data.question) {
+        location.assign('/');
+      }
+    }
+    catch (err) {
+        console.log(err);
+    }
+  });
+</script>
