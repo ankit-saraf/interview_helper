@@ -23,11 +23,12 @@ app.use(uploadConfig);
 app.set('view engine', 'ejs');
 
 // database connection
+const port = process.env.PORT || '8000';
 const dbURI = 'mongodb+srv://akkey:test123@cluster0.ba99p.mongodb.net/node-auth?retryWrites=true&w=majority';
 mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex:true })
   .then((result) => {
     
-    app.listen(3000);
+    app.listen(port, () => console.log(`Server started on Port ${port}`));
   }
   
   )
