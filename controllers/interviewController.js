@@ -40,7 +40,7 @@ const add_experience_post = async (req, res) => {
   // const company = req.body.company;
   const { name, branch, year, profile, experience, company } = req.body;
   const img={
-    data:fs.readFileSync(path.join('/home/akkey/Desktop/NodeJs/node-express-jwt-auth/public/uploads/' + req.files['img'][0].filename)),
+    data:fs.readFileSync(path.join('/home/akkey/Desktop/NodeJs/interview_helper/public/uploads/' + req.files['img'][0].filename)),
     contentType: 'image/png'
   }
   var cimg;
@@ -50,7 +50,7 @@ const add_experience_post = async (req, res) => {
   }
   else{
     cimg={
-      data:fs.readFileSync(path.join('/home/akkey/Desktop/NodeJs/node-express-jwt-auth/public/uploads/' + req.files['cimg'][0].filename)),
+      data:fs.readFileSync(path.join('/home/akkey/Desktop/NodeJs/interview_helper/public/uploads/' + req.files['cimg'][0].filename)),
       contentType: 'image/png'
     }
   }

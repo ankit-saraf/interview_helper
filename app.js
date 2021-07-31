@@ -28,7 +28,7 @@ const dbURI = 'mongodb+srv://akkey:test123@cluster0.ba99p.mongodb.net/node-auth?
 mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex:true })
   .then((result) => {
     
-    app.listen(port, () => console.log(`Server started on Port ${port}`));
+    app.listen(8000, () => console.log(`Server started on Port ${port}`));
   }
   
   )

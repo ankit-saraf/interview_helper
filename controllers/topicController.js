@@ -19,7 +19,7 @@ const question_get = async (req, res) => {
   const topicName = req.params.id;
   const topicId = await Topic.find({name: topicName}).exec();
   topics = await Topic.find().sort({ createdAt: -1 });
-  Question.find({topic: topicId[0]._id, approved: true})
+  Question.find({topic: topicId[0]._id})
     .then(result => {
       res.render('question', { questions: result, topics: topics, title: 'Questions' });
     })
@@ -74,6 +74,7 @@ const add_question_post = async (req, res) => {
 
 const my_topic_get = (req, res) => {
   const current_user = res.locals.user;
+  loggedUser = current_user;
   myTopic.find({person: current_user._id}).sort({ createdAt: -1 })
     .then(result => {
       res.render('myTopic', { topics: result, title: 'My topics' });
@@ -99,9 +100,10 @@ const my_question_get = async (req, res) => {
 }
 
 const add_myQuestion_post = async (req, res) => {
-  const current_user = loggedUser;
+  const current_user = loggedUser
   const { Qname, link, topicName } = req.body;
-  console.log(current_user)
+  console.log(topicName);
+  console.log('Current user',current_user)
   const topic = await myTopic.find({name: topicName, person: current_user._id}).exec();
   console.log(topic);
   try {
